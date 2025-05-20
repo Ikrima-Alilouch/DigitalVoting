@@ -1,7 +1,7 @@
 <nav class="bg-gray-800 p-4">
     <div class="container mx-auto px-4 sm:px-6 lg:px-80">
         <div class="flex items-center justify-between">
-            <a href="{{ route('welcome') }}">
+            <a href="{{ route('home') }}">
                 <img src="{{ asset('image/website-logo3.png') }}" alt="Logo" class="h-15 w-20 inline-block mr-2">
             </a>
             <div class="flex items-center space-x-4">

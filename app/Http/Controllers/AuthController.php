@@ -11,7 +11,7 @@ class AuthController extends Controller
     {
         auth()->logout();
 
-        return redirect()->route('welcome');
+        return redirect()->route('home');
     }
 
     public function loginView()
@@ -24,7 +24,7 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (auth()->attempt($credentials)) {
-            return redirect()->route('welcome');
+            return redirect()->route('home');
         }
 
         return redirect()->back()->withErrors(['email' => 'Invalid credentials']);
@@ -74,7 +74,7 @@ class AuthController extends Controller
 
         auth()->login($user);
 
-        return redirect()->route('welcome');
+        return redirect()->route('home');
     }
 
 }
