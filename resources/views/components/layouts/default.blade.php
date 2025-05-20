@@ -7,7 +7,7 @@
     @vite('resources/css/app.css')
 </head>
 <body>
-<h1 class="container">
+<h1>
     @include('components.navbar')
 
     {{ $slot }}
