@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\User;
 
@@ -42,7 +43,7 @@ class AuthController extends Controller
             'firstname' => 'required|string|max:255',
             'infix' => 'nullable|string|max:25',
             'lastname' => 'required|string|max:255',
-            'birthdate' => 'required|date',
+            'birthdate' => 'required|date|before:'.Carbon::now()->subYears(18)->toDateString(),
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:16|confirmed|regex:/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[^a-zA-Z\d]).+$/u',
             'BSNnumber' => 'required|string|unique:users',
