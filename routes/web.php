@@ -6,11 +6,11 @@ use App\Http\Controllers\VoteController;
 use App\Http\Controllers\AuthController;
 
 Route::get('/', function () {
-    return view('home');
+    return view('homepage.home');
 })->name('home');
 
 Route::get('/about', function () {
-    return view('about');
+    return view('homepage.about');
 })->name('about');
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
