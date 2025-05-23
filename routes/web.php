@@ -4,6 +4,9 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\VoteController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PartyController;
+use App\Http\Middleware\AdminMiddleware;
+
 
 Route::get('/', function () {
     return view('homepage.home');
@@ -28,3 +31,10 @@ Route::post('/profileUpdate', [ProfileController::class, 'profileUpdate'])->name
 
 Route::get('/votes', [VoteController::class, 'index'])->name('votes.index')->middleware('auth');
 
+//Route::middleware(['admin'])->group(function () {
+//    Route::get('/adminPartyManagement', [PartyController::class, 'adminIndex'])->name('party.admin-index');
+//});
+
+Route::middleware(AdminMiddleware::class)->group(function () {
+    Route::get('/adminPartyManagement', [PartyController::class, 'adminIndex'])->name('party.admin-index');
+});

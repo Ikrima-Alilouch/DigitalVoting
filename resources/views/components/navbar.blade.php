@@ -1,4 +1,4 @@
-<nav class="bg-gradient-to-r from-blue-600 to-blue-800 shadow-lg">
+<nav class="bg-gradient-to-r from-blue-600 to-blue-950 shadow-lg">
     <div class="container mx-auto px-4 sm:px-6 lg:px-80 py-3">
         <div class="flex items-center justify-between">
             <a href="{{ route('home') }}" class="transition transform hover:scale-105 duration-300">

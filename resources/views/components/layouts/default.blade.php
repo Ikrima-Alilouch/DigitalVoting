@@ -9,7 +9,12 @@
 
     <body>
         <h1>
-            @include('components.navbar')
+            @if(auth()->check() && auth()->user()->role->value === 'admin')
+                @include('components.admin-navbar')
+            @else
+
+                @include('components.navbar')
+            @endif
 
             {{ $slot }}
         </h1>
