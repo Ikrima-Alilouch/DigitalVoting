@@ -16,3 +16,18 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();
+
+class AppContext
+{
+    public function middleware(Middleware $middleware): void
+    {
+        $middleware->alias([
+
+        ]);
+    }
+
+    public function exceptions(Exceptions $exceptions): void
+    {
+        //
+    }
+}
