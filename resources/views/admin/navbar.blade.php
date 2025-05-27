@@ -5,7 +5,7 @@
                 <img src="{{ asset('image/website-logo3.png') }}" alt="Logo" class="h-16 w-18 inline-block">
             </a>
             <div class="flex items-center space-x-6">
-                <a href="{{ route('party.admin-index') }}" class="text-white hover:text-blue-200 transition-colors duration-300 py-2 px-3 rounded-md text-sm font-medium hover:bg-blue-700/50">Party management</a>
+                <a href="{{ route('admin.parties.index') }}" class="text-white hover:text-blue-200 transition-colors duration-300 py-2 px-3 rounded-md text-sm font-medium hover:bg-blue-700/50">Party management</a>
                 <a href="#" class="text-white hover:text-blue-200 transition-colors duration-300 py-2 px-3 rounded-md text-sm font-medium hover:bg-blue-700/50">Voting management</a>
                 <div class="relative">
                     <button id="profileDropdown" class="text-white hover:text-blue-200 transition-all duration-300 py-2 px-4 rounded-md text-sm font-medium flex items-center hover:bg-blue-700/50">
