@@ -9,8 +9,8 @@
 
     <body>
         <h1>
-            @if(auth()->check() && auth()->user()->role->value === 'admin')
-                @include('components.admin-navbar')
+            @if( auth()->check() && auth()->user()->role->value === 'admin')
+                @include('admin.navbar')
             @else
 
                 @include('components.navbar')

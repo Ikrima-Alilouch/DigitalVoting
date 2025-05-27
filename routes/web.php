@@ -22,19 +22,18 @@ Route::post('/login', [AuthController::class, 'loginPost'])->name('login.post');
 Route::get('/register', [AuthController::class, 'registerView'])->name('register');
 Route::post('/register', [AuthController::class, 'registerPost'])->name('register.post');
 
-Route::get('/profile', [ProfileController::class, 'profileView'])->name('profile.index')->middleware('auth');
-Route::post('/profile', [ProfileController::class, 'profileView']);
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'profileView'])->name('profile.index');
+    Route::post('/profile', [ProfileController::class, 'profileView']);
+    Route::get('/profileEdit', [ProfileController::class, 'profileEditView'])->name('profile.edit');
+    Route::post('/profileEdit', [ProfileController::class, 'profileEditView']);
+    Route::post('/profileUpdate', [ProfileController::class, 'profileUpdate'])->name('profile.update');
 
-Route::get('/profileEdit', [ProfileController::class, 'profileEditView'])->name('profile.edit')->middleware('auth');
-Route::post('/profileEdit', [ProfileController::class, 'profileEditView']);
-Route::post('/profileUpdate', [ProfileController::class, 'profileUpdate'])->name('profile.update')->middleware('auth');
-
-Route::get('/votes', [VoteController::class, 'index'])->name('votes.index')->middleware('auth');
-
-//Route::middleware(['admin'])->group(function () {
-//    Route::get('/adminPartyManagement', [PartyController::class, 'adminIndex'])->name('party.admin-index');
-//});
+    Route::get('/votes', [VoteController::class, 'index'])->name('votes.index');
+});
 
 Route::middleware(AdminMiddleware::class)->group(function () {
-    Route::get('/adminPartyManagement', [PartyController::class, 'adminIndex'])->name('party.admin-index');
+    Route::get('/adminPartyManagement', [PartyController::class, 'adminPartyIndex'])->name('admin.parties.index');
+    Route::get('/adminPartyCreate', [PartyController::class, 'adminPartyCreate'])->name('admin.parties.create');
+    Route::post('/adminPartyStore', [PartyController::class, 'adminPartyStore'])->name('admin.parties.store');
 });
