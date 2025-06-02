@@ -30,10 +30,16 @@ Route::middleware('auth')->group(function () {
     Route::post('/profileUpdate', [ProfileController::class, 'profileUpdate'])->name('profile.update');
 
     Route::get('/votes', [VoteController::class, 'index'])->name('votes.index');
+    Route::get('/parties', [PartyController::class, 'userIndex'])->name('parties.index');
 });
 
 Route::middleware(AdminMiddleware::class)->group(function () {
     Route::get('/adminPartyManagement', [PartyController::class, 'adminPartyIndex'])->name('admin.parties.index');
     Route::get('/adminPartyCreate', [PartyController::class, 'adminPartyCreate'])->name('admin.parties.create');
-    Route::post('/adminPartyStore', [PartyController::class, 'adminPartyStore'])->name('admin.parties.store');
+    Route::post('/adminPartyManagement', [PartyController::class, 'adminPartyStore'])->name('admin.parties.store');
+    Route::get('/adminPartyEdit', [PartyController::class, 'adminPartyEdit'])->name('admin.parties.edit');
+    Route::put('/admin/parties/{party}', [PartyController::class, 'update'])->name('admin.parties.update');
+    Route::delete('/admin/parties/{party}', [PartyController::class, 'destroy'])->name('admin.parties.destroy');
+    Route::get('/admin/parties/{party}/members', [PartyController::class, 'members'])->name('admin.parties.members');
+    Route::put('/admin/parties/{party}/members', [PartyController::class, 'updateMembers'])->name('admin.parties.members.update');
 });
