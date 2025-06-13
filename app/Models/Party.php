@@ -15,10 +15,10 @@ class Party extends Model
     public $timestamps = true;
 
     protected $fillable = [
+        'logo',
         'name',
         'description',
         'status',
-        'logo',
         'leader_firstname',
         'leader_infix',
         'leader_lastname',

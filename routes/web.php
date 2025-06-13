@@ -36,10 +36,13 @@ Route::middleware('auth')->group(function () {
 Route::middleware(AdminMiddleware::class)->group(function () {
     Route::get('/adminPartyManagement', [PartyController::class, 'adminPartyIndex'])->name('admin.parties.index');
     Route::get('/adminPartyCreate', [PartyController::class, 'adminPartyCreate'])->name('admin.parties.create');
-    Route::post('/adminPartyManagement', [PartyController::class, 'adminPartyStore'])->name('admin.parties.store');
-    Route::get('/adminPartyEdit', [PartyController::class, 'adminPartyEdit'])->name('admin.parties.edit');
+    Route::post('/adminPartyCreate', [PartyController::class, 'adminPartyStore'])->name('admin.parties.store');
+    Route::get('/admin/parties/{party}/edit', [PartyController::class, 'adminPartyEdit'])->name('admin.parties.edit');
     Route::put('/admin/parties/{party}', [PartyController::class, 'update'])->name('admin.parties.update');
     Route::delete('/admin/parties/{party}', [PartyController::class, 'destroy'])->name('admin.parties.destroy');
     Route::get('/admin/parties/{party}/members', [PartyController::class, 'members'])->name('admin.parties.members');
     Route::put('/admin/parties/{party}/members', [PartyController::class, 'updateMembers'])->name('admin.parties.members.update');
+    Route::get('/admin/parties/{party}', [PartyController::class, 'show'])->name('admin.parties.show');
+
+
 });

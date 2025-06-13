@@ -26,9 +26,9 @@ class PartyController extends Controller
 
     public function adminPartyStore(Request $request)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'logo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:parties',
             'description' => 'nullable|string',
             'status' => 'required|in:active,deactivated',
             'leader_firstname' => 'required|string|max:255',
@@ -38,18 +38,12 @@ class PartyController extends Controller
 
         if ($request->hasFile('logo')) {
             $file = $request->file('logo');
-            $logoPath = $file->storeAs('logo', $file->getClientOriginalName(), 'public');
+            $filename = $file->getClientOriginalName();
+            $path = $file->storeAs('logo', $filename, 'public');
+            $validatedData['logo'] = $path;
         }
 
-        $party = Party::create([
-            'logo' => $logoPath,
-            'name' => $request->name,
-            'description' => $request->description,
-            'status' => $request->status,
-            'leader_firstname' => $request->leader_firstname,
-            'leader_infix' => $request->leader_infix,
-            'leader_lastname' => $request->leader_lastname
-        ]);
+        Party::create($validatedData);
 
         return redirect()->route('admin.parties.index')->with('success', 'Party created successfully.');
     }
@@ -62,36 +56,33 @@ class PartyController extends Controller
     public function update(Request $request, Party $party)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|unique:parties,name,' . $party->partyID . ',partyID',
             'description' => 'nullable|string',
-            'seats' => 'required|integer|min:1',
             'status' => 'required|in:active,deactivated',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'leader_firstname' => 'required|string|max:255',
+            'leader_firstname' => 'required|string|max:255|unique:parties,leader_firstname,' . $party->partyID . ',partyID',
             'leader_infix' => 'nullable|string|max:255',
             'leader_lastname' => 'required|string|max:255'
         ]);
 
-        if ($request->hasFile('party_image')) {
-            if ($party->image) {
-                Storage::disk('public')->delete($party->image);
+        if ($request->hasFile('logo')) {
+            if ($party->logo) {
+                Storage::disk('public')->delete($party->logo);
             }
-            $imagePath = $request->file('party_image')->store('party-images', 'public');
-            $party->image = $imagePath;
+            $logoPath = $request->file('logo')->store('party-logo', 'public');
+            $party->logo = $logoPath;
         }
 
         $party->update([
             'name' => $request->name,
             'description' => $request->description,
-            'seats' => $request->seats,
             'status' => $request->status,
             'leader_firstname' => $request->leader_firstname,
             'leader_infix' => $request->leader_infix,
             'leader_lastname' => $request->leader_lastname
         ]);
 
-        return redirect()->route('admin.parties.index')
-            ->with('success', 'Party updated successfully.');
+        return redirect()->route('admin.parties.index')->with('success', 'Party updated successfully.');
     }
 
     public function destroy(Party $party)
@@ -138,4 +129,9 @@ class PartyController extends Controller
             ->with('success', 'Party members updated successfully.');
     }
 
+    public function show(Party $party)
+    {
+        $party->load('members');
+        return response()->json($party);
+    }
 }
