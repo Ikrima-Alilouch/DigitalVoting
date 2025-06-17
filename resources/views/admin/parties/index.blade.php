@@ -7,8 +7,36 @@
         </button>
         <div class="px-4 py-6 sm:px-0">
             <h1 class="text-3xl font-bold text-gray-900 mb-6">Political Parties</h1>
+
+            <!-- Filter Controls -->
+            <div class="mb-6 bg-white p-4 rounded-lg shadow">
+                <form action="{{ route('admin.parties.index') }}" method="GET" class="flex flex-wrap gap-4 items-end">
+                    <div>
+                        <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                        <select name="status" id="status" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                            <option value="all" {{ request('status') == 'all' ? 'selected' : '' }}>All</option>
+                            <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
+                            <option value="deactivated" {{ request('status') == 'deactivated' ? 'selected' : '' }}>Deactivated</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="sort" class="block text-sm font-medium text-gray-700 mb-1">Sort By</label>
+                        <select name="sort" id="sort" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                            <option value="name_asc" {{ request('sort') == 'name_asc' ? 'selected' : '' }}>Name (A-Z)</option>
+                            <option value="name_desc" {{ request('sort') == 'name_desc' ? 'selected' : '' }}>Name (Z-A)</option>
+                            <option value="status" {{ request('sort') == 'status' ? 'selected' : '' }}>Status</option>
+                        </select>
+                    </div>
+                    <div>
+                        <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            Apply Filters
+                        </button>
+                    </div>
+                </form>
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                @foreach( $parties as $party)
+                @foreach($parties as $party)
                     <div class="bg-white overflow-hidden shadow rounded-lg cursor-pointer hover:shadow-lg transition-shadow duration-300"
                          onclick="showPartyDetails({{ $party->partyID }})">
                         <div class="p-6">
@@ -131,11 +159,7 @@
                         document.getElementById('modalMembersLink').href = `/admin/parties/${partyId}/members`;
                         document.getElementById('modalDeleteForm').action = `/admin/parties/${partyId}`;
                     })
-                    .catch(error => {
-                        console.error('Error fetching party details:', error);
-                        alert('Error loading party details. Please try again.');
-                        closePartyModal();
-                    });
+                 
             }
 
             function closePartyModal() {

@@ -7,15 +7,48 @@ use App\Models\Party;
 
 class PartyController extends Controller
 {
-    public function userIndex()
+    public function userIndex(Request $request)
     {
-        $parties = Party::where('status', 'active')->with('members')->get();
+        $query = Party::query();
+
+        // Filter by status if provided
+        if ($request->has('status')) {
+            $query->where('status', $request->status);
+        } else {
+            $query->where('status', 'active');
+        }
+
+        // Sort by name
+        $query->orderBy('name', 'asc');
+
+        $parties = $query->with('members')->get();
+
         return view('parties.index', compact('parties'));
     }
 
-    public function adminPartyIndex()
+    public function adminPartyIndex(Request $request)
     {
-        $parties = Party::with('members')->get();
+        $query = Party::query();
+
+        // Filter by status
+        if ($request->has('status') && $request->status !== 'all') {
+            $query->where('status', $request->status);
+        }
+
+        // Sort the results
+        switch ($request->sort) {
+            case 'name_desc':
+                $query->orderBy('name', 'desc');
+                break;
+            case 'status':
+                $query->orderBy('status', 'asc')->orderBy('name', 'asc');
+                break;
+            default: // name_asc
+                $query->orderBy('name', 'asc');
+                break;
+        }
+
+        $parties = $query->with('members')->get();
         return view('admin.parties.index', compact('parties'));
     }
 
@@ -81,7 +114,7 @@ class PartyController extends Controller
             'leader_infix' => $request->leader_infix,
             'leader_lastname' => $request->leader_lastname
         ]);
-    
+
         return redirect()->route('admin.parties.index')->with('success', 'Party updated successfully.');
     }
 
@@ -100,7 +133,7 @@ class PartyController extends Controller
     public function members(Party $party)
     {
         $members = $party->members;
-        return view('parties.admin.members', compact('party', 'members'));
+        return view('admin.parties.members', compact('party', 'members'));
     }
 
     public function updateMembers(Request $request, Party $party)
@@ -113,20 +146,47 @@ class PartyController extends Controller
             'members.*.role' => 'required|string|max:255'
         ]);
 
-        $party->members()->delete();
-
-        foreach ($request->members as $member) {
-            PartyMember::create([
-                'partyID' => $party->partyID,
-                'firstname' => $member['firstname'],
-                'infix' => $member['infix'],
-                'lastname' => $member['lastname'],
-                'role' => $member['role']
+        foreach ($request->members as $memberData) {
+            $party->members()->create([
+                'firstname' => $memberData['firstname'],
+                'infix' => $memberData['infix'] ?? null,
+                'lastname' => $memberData['lastname'],
+                'role' => $memberData['role']
             ]);
         }
 
-        return redirect()->route('admin.parties.index')
-            ->with('success', 'Party members updated successfully.');
+        return redirect()->route('admin.parties.members', $party)
+            ->with('success', 'Member added successfully.');
+    }
+
+    public function updateMember(Request $request, Party $party, $memberId)
+    {
+        $request->validate([
+            'firstname' => 'required|string|max:255',
+            'infix' => 'nullable|string|max:255',
+            'lastname' => 'required|string|max:255',
+            'role' => 'required|string|max:255'
+        ]);
+
+        $member = $party->members()->findOrFail($memberId);
+        $member->update($request->all());
+
+        return response()->json($member);
+    }
+
+    public function destroyMember(Party $party, $memberId)
+    {
+        $member = $party->members()->findOrFail($memberId);
+        $member->delete();
+
+        return redirect()->route('admin.parties.members', $party)
+            ->with('success', 'Member removed successfully.');
+    }
+
+    public function getMember(Party $party, $memberId)
+    {
+        $member = $party->members()->findOrFail($memberId);
+        return response()->json($member);
     }
 
     public function show(Party $party)

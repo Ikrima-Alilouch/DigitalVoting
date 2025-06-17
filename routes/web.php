@@ -40,9 +40,11 @@ Route::middleware(AdminMiddleware::class)->group(function () {
     Route::get('/admin/parties/{party}/edit', [PartyController::class, 'adminPartyEdit'])->name('admin.parties.edit');
     Route::put('/admin/parties/{party}', [PartyController::class, 'update'])->name('admin.parties.update');
     Route::delete('/admin/parties/{party}', [PartyController::class, 'destroy'])->name('admin.parties.destroy');
+
+    // Member management routes
     Route::get('/admin/parties/{party}/members', [PartyController::class, 'members'])->name('admin.parties.members');
     Route::put('/admin/parties/{party}/members', [PartyController::class, 'updateMembers'])->name('admin.parties.members.update');
-    Route::get('/admin/parties/{party}', [PartyController::class, 'show'])->name('admin.parties.show');
-
-
+    Route::put('/admin/parties/{party}/members/{member}', [PartyController::class, 'updateMember'])->name('admin.parties.members.update.member');
+    Route::delete('/admin/parties/{party}/members/{member}', [PartyController::class, 'destroyMember'])->name('admin.parties.members.destroy');
+    Route::get('/admin/parties/{party}/members/{member}', [PartyController::class, 'getMember'])->name('admin.parties.members.get');
 });

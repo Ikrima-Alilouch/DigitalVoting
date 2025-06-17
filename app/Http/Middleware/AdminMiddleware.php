@@ -12,12 +12,10 @@ class AdminMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check() && Auth::user()->role === Role::ADMIN) {
+        if (Auth::check() && Auth::user()->role->value === Role::ADMIN->value) {
             return $next($request);
         }
 
-//        return abort(403, 'Unauthorized');
-        return redirect()->route('home');
+        return redirect()->route('home')->with('error', 'You do not have permission to access this page.');
     }
-
 }
