@@ -81,7 +81,7 @@ class PartyController extends Controller
             'leader_infix' => $request->leader_infix,
             'leader_lastname' => $request->leader_lastname
         ]);
-
+    
         return redirect()->route('admin.parties.index')->with('success', 'Party updated successfully.');
     }
 
