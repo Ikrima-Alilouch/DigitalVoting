@@ -71,7 +71,7 @@
     </div>
 
     <!-- Party Details Modal -->
-    <div id="partyModal" class="fixed inset-0 items-center justify-center  bg-opacity-50 backdrop-blur-sm">
+    <div id="partyModal" class="fixed inset-0 flex items-center justify-center z-50  bg-opacity-50 backdrop-blur-sm hidden">
         <!-- The actual modal content (white box) -->
         <div class="relative p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white transform transition-all duration-300 ease-in-out">
             <div class="flex justify-between items-center mb-4">

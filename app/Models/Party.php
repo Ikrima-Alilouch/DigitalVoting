@@ -28,4 +28,9 @@ class Party extends Model
     {
         return $this->hasMany(PartyMember::class, 'partyID', 'partyID');
     }
+
+    public function votes(): HasMany
+    {
+        return $this->hasMany(User_Vote::class, 'partyID', 'partyID');
+    }
 }

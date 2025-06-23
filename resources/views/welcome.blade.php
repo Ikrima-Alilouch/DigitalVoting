@@ -1,4 +1,4 @@
-<x-layouts.default>
+    <x-layouts.default>
     <x-slot name="title">Welcome</x-slot>
 
     <div class="container mx-auto text-3xl font-bold underline">

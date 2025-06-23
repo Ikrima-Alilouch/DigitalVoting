@@ -8,14 +8,16 @@
 </head>
 
 <body>
-    @if(auth()->check() && auth()->user()->role->value === 'admin')
+<h1>
+    @if( auth()->check() && auth()->user()->role->value === 'admin')
         @include('admin.navbar')
     @else
         @include('components.navbar')
     @endif
 
     {{ $slot }}
+</h1>
 
-    @stack('scripts')
+@stack('scripts')
 </body>
 </html>

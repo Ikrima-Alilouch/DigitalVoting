@@ -3,17 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User_Vote extends Model
 {
-    protected $primaryKey = 'partyID';
-    protected $table = 'parties';
+    protected $table = 'user_vote';
     public $timestamps = true;
 
     protected $fillable = [
         'partyID',
-        'userID',
+        'id', // This is the user ID
     ];
 
     public function party()
@@ -23,6 +21,6 @@ class User_Vote extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'userID', 'id');
+        return $this->belongsTo(User::class, 'id', 'id');
     }
 }
