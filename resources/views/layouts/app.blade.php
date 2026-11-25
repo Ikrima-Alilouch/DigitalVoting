@@ -16,7 +16,9 @@
 </head>
 <body class="font-sans antialiased">
     <div class="min-h-screen bg-gray-100">
-        @include('layouts.navigation')
+        @if (empty($hideNavbar))
+            @include('layouts.navigation')
+        @endif
 
         <!-- Page Heading -->
         @if (isset($header))
@@ -29,8 +31,10 @@
 
         <!-- Page Content -->
         <main>
-            {{ $slot }}
+            @yield('content')
         </main>
     </div>
+    @stack('scripts')
+    <script src="//unpkg.com/alpinejs" defer></script>
 </body>
 </html> 

@@ -1,6 +1,6 @@
-<x-layouts.default>
-    <x-slot name="title">Parties</x-slot>
+@extends('layouts.app')
 
+@section('content')
     <div id="mainContent" class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 transition-all duration-300 ease-in-out">
         <button class="float-right">
             <a class="mb-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-300" href="{{ route('admin.parties.create') }}">Create Party</a>
@@ -38,7 +38,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @foreach($parties as $party)
                     <div class="bg-white overflow-hidden shadow rounded-lg cursor-pointer hover:shadow-lg transition-shadow duration-300"
-                         onclick="showPartyDetails({{ $party->partyID }})">
+                         onclick="showPartyDetails({{ $party->partyID }})" style="text-decoration: none; color: inherit;">
                         <div class="p-6">
                             <div class="flex items-center space-x-4">
                                 @if($party->logo)
@@ -103,17 +103,16 @@
                 </div>
 
                 <div class="flex justify-end space-x-3 mt-6">
-                    <a id="modalEditLink" href="#" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">
+                    <a id="modalEditLink" href="#" onclick="openEditPartyModal(); return false;" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">
                         Edit Party
                     </a>
-                    <a id="modalMembersLink" href="#" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700">
+                    <a id="modalMembersLink" href="#" onclick="openMembersModal(); return false;" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700">
                         Manage Members
                     </a>
-                    <form id="modalDeleteForm" action="#" method="POST" class="inline">
+                    <form id="modalDeleteForm" method="POST" action="#">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" onclick="return confirm('Are you sure you want to delete this party?')"
-                                class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700">
+                        <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700">
                             Delete Party
                         </button>
                     </form>
@@ -124,15 +123,27 @@
 
     @push('scripts')
         <script>
+            let selectedPartyId = null;
+            
             function showPartyDetails(partyId) {
+                console.log('Opening party details for ID:', partyId); // Debug log
+                selectedPartyId = partyId;
+                
                 // Show the modal first
                 document.getElementById('partyModal').classList.remove('hidden');
                 // Prevent background scrolling
                 document.body.style.overflow = 'hidden';
 
-                fetch(`/admin/parties/${partyId}`)
-                    .then(response => response.json())
+                fetch(`/admin/parties/${partyId}/json`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
                     .then(data => {
+                        console.log('Party data received:', data); // Debug log
+                        
                         document.getElementById('modalPartyName').textContent = data.name;
                         document.getElementById('modalPartyLogo').src = data.logo ? `/storage/${data.logo}` : '';
                         document.getElementById('modalPartyLeader').textContent = `${data.leader_firstname} ${data.leader_infix ? data.leader_infix + ' ' : ''}${data.leader_lastname}`;
@@ -143,29 +154,42 @@
                         if (data.members && data.members.length > 0) {
                             data.members.forEach(member => {
                                 membersContainer.innerHTML += `
-                            <div class="flex items-center justify-between p-2 hover:bg-gray-50 rounded">
-                                <div>
-                                    <p class="text-sm text-gray-900">${member.firstname} ${member.infix ? member.infix + ' ' : ''}${member.lastname}</p>
-                                    <p class="text-sm text-gray-500">${member.role}</p>
-                                </div>
-                            </div>
-                        `;
+                                    <div class="flex items-center justify-between p-2 hover:bg-gray-50 rounded">
+                                        <div>
+                                            <p class="text-sm text-gray-900">${member.firstname} ${member.infix ? member.infix + ' ' : ''}${member.lastname}</p>
+                                            <p class="text-sm text-gray-500">${member.role}</p>
+                                        </div>
+                                    </div>
+                                `;
                             });
                         } else {
                             membersContainer.innerHTML = '<p class="text-gray-500">No members found</p>';
                         }
 
-                        document.getElementById('modalEditLink').href = `/admin/parties/${partyId}/edit`;
-                        document.getElementById('modalMembersLink').href = `/admin/parties/${partyId}/members`;
-                        document.getElementById('modalDeleteForm').action = `/admin/parties/${partyId}`;
+                        // Set the correct URLs using the current partyId
+                        const editLink = document.getElementById('modalEditLink');
+                        const membersLink = document.getElementById('modalMembersLink');
+                        const deleteForm = document.getElementById('modalDeleteForm');
+                        
+                        editLink.href = `/admin/parties/${partyId}/edit`;
+                        membersLink.href = `/admin/parties/${partyId}/members`;
+                        deleteForm.action = `/admin/parties/${partyId}`;
+                        
+                        console.log('Edit link set to:', editLink.href); // Debug log
+                        console.log('Delete form action set to:', deleteForm.action); // Debug log
                     })
-                 
+                    .catch(error => {
+                        console.error('Error fetching party details:', error);
+                        // Close modal on error
+                        closePartyModal();
+                    });
             }
 
             function closePartyModal() {
                 document.getElementById('partyModal').classList.add('hidden');
                 // Restore background scrolling
                 document.body.style.overflow = '';
+                selectedPartyId = null;
             }
 
             // Close modal when clicking outside
@@ -177,10 +201,43 @@
             });
 
             // Prevent modal from closing when clicking inside the modal content
-            // This listener is now on the actual modal content div, not its parent container
             document.querySelector('#partyModal > div.relative').addEventListener('click', function(e) {
                 e.stopPropagation();
             });
+
+            // Handle delete form submission
+            document.getElementById('modalDeleteForm').addEventListener('submit', function(e) {
+                console.log('Delete form submitted with action:', this.action); // Debug log
+                if (this.action === '#' || !selectedPartyId) {
+                    e.preventDefault();
+                    alert('Please select a party to delete.');
+                    return false;
+                }
+                // The confirmation is handled by the onsubmit attribute
+            });
+
+            function openEditPartyModal() {
+                if (!selectedPartyId) return;
+                fetch(`/admin/parties/${selectedPartyId}/edit`)
+                    .then(response => response.text())
+                    .then(html => {
+                        document.getElementById('partyModal').innerHTML = html;
+                        document.getElementById('partyModal').classList.remove('hidden');
+                        document.body.style.overflow = 'hidden';
+                    });
+            }
+
+            function openMembersModal() {
+                if (!selectedPartyId) return;
+                fetch(`/admin/parties/${selectedPartyId}/members`)
+                    .then(response => response.text())
+                    .then(html => {
+                        document.getElementById('partyModal').innerHTML = html;
+                        document.getElementById('partyModal').classList.remove('hidden');
+                        document.body.style.overflow = 'hidden';
+                    });
+            }
         </script>
     @endpush
-</x-layouts.default>
+    
+@endsection

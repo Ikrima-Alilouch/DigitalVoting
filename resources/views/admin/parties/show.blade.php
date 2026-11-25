@@ -1,6 +1,6 @@
-<x-layouts.default>
-    <x-slot name="title">{{ $party->name }}</x-slot>
+@extends('layouts.app')
 
+@section('content')
     <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div class="px-4 py-6 sm:px-0">
             <div class="flex justify-between items-center mb-6">
@@ -106,4 +106,4 @@
             </div>
         </div>
     </div>
-</x-layouts.default> 
+@endsection 

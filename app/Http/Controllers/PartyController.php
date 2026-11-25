@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Party;
+use Illuminate\Support\Facades\Storage;
 
-class PartyController extends Controller
+class  PartyController extends Controller
 {
     public function userIndex(Request $request)
     {
@@ -118,16 +119,11 @@ class PartyController extends Controller
         return redirect()->route('admin.parties.index')->with('success', 'Party updated successfully.');
     }
 
-    public function destroy(Party $party)
+    public function destroy($id)
     {
-        if ($party->image) {
-            Storage::disk('public')->delete($party->image);
-        }
-
+        $party = Party::findOrFail($id);
         $party->delete();
-
-        return redirect()->route('admin.parties.index')
-            ->with('success', 'Party deleted successfully.');
+        return redirect()->route('admin.parties.index')->with('success', 'Party deleted!');
     }
 
     public function members(Party $party)
@@ -192,6 +188,6 @@ class PartyController extends Controller
     public function show(Party $party)
     {
         $party->load('members');
-        return response()->json($party);
+        return view('parties.show', compact('party'));
     }
 }

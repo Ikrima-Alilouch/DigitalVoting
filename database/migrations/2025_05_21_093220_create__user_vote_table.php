@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('_user_vote', function (Blueprint $table) {
+        Schema::create('user_vote', function (Blueprint $table) {
             $table->integer('partyID')->index();
             $table->integer('id')->index();
             $table->timestamps();
@@ -23,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('_user_vote');
+        Schema::dropIfExists('user_vote');
     }
 };

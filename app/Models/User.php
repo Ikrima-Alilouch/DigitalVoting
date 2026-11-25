@@ -56,5 +56,13 @@ class User extends Authenticatable
         ];
     }
 
-
+    /**
+     * Check if the user is an admin.
+     *
+     * @return bool
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === \App\Enums\Role::ADMIN;
+    }
 }

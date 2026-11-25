@@ -59,9 +59,7 @@ class VoteController extends Controller
 
         // Get all parties with their vote counts
         $parties = Party::where('status', 'active')
-            ->withCount(['votes' => function($query) {
-                $query->select('partyID');
-            }])
+            ->withCount('votes')
             ->get();
 
         return view('votes.overview', compact('userVotes', 'parties'));
@@ -83,7 +81,8 @@ class VoteController extends Controller
             ->get()
             ->groupBy('id'); // Group by user ID
 
-        return view('admin.votes.management', compact('userVotes'));
+        $parties = \App\Models\Party::withCount('votes')->get();
+        return view('admin.votes.management', compact('userVotes', 'parties'));
     }
 
 //    public function vote(Request $request)

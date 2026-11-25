@@ -1,6 +1,6 @@
-<x-layouts.default>
-    <x-slot name="title">Login</x-slot>
+@extends('layouts.app')
 
+@section('content')
     <div class="w-full max-w-md p-6 bg-white rounded-lg shadow-md mx-auto border border-[#1E2939] m-16">
         <div class="text-center mb-8">
             <img src="{{ asset('image/website-logo3.png') }}" alt="Logo" class="mx-auto h-20 w-auto mb-4 transform hover:scale-105 transition-transform duration-300">
@@ -85,4 +85,4 @@
             }
         })
     </script>
-</x-layouts.default>
+@endsection

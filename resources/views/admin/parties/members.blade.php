@@ -1,6 +1,7 @@
-<x-layouts.default>
-    <x-slot name="title">Manage Party Members - {{ $party->name }}</x-slot>
+@php($hideNavbar = true)
+@extends('layouts.app')
 
+@section('content')
     <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div class="px-4 py-6 sm:px-0">
             <div class="flex justify-between items-center mb-6">
@@ -75,7 +76,7 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <button onclick="editMember({{ $member->id }})" class="text-blue-600 hover:text-blue-900 mr-3">Edit</button>
-                                        <form action="{{ route('admin.parties.members.destroy', ['party' => $party->partyID, 'member' => $member->id]) }}" method="POST" class="inline">
+                                        <form action="{{ route('admin.parties.members.destroy', ['party' => $party->partyID, 'member' => $member->partyMemberID]) }}" method="POST" class="inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Are you sure you want to remove this member?')">Remove</button>
@@ -169,6 +170,17 @@
                 closeEditModal();
             }
         });
+
+        function doneManagingMembers() {
+            // This assumes the parent page has a function to show the party details modal
+            if (window.parent && window.parent.showPartyDetails) {
+                window.parent.showPartyDetails({{ $party->partyID }});
+            }
+            // If you're using a modal, close the modal here
+            if (window.parent && window.parent.closePartyModal) {
+                window.parent.closePartyModal();
+            }
+        }
     </script>
     @endpush
-</x-layouts.default> 
+@endsection 

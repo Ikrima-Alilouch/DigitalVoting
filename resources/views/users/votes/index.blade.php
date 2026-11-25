@@ -1,5 +1,6 @@
-<x-layouts.default>
-    <x-slot name="title">Vote</x-slot>
+@extends('layouts.app')
+
+@section('content')
     <div id="mainContent" class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8 transition-all duration-300 ease-in-out">
         <div class="px-4 py-6 sm:px-0">
             <h1 class="text-3xl font-bold text-gray-900 mb-6">Political Parties</h1>
@@ -10,50 +11,54 @@
                 </div>
             @endif
 
-            <form action="{{ route('votes.store') }}" method="POST" id="votingForm">
-                @csrf
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    @foreach($parties as $party)
-                        <div class="bg-white overflow-hidden shadow rounded-lg cursor-pointer hover:shadow-lg transition-shadow duration-300 party-card" 
-                             data-party-id="{{ $party->partyID }}">
-                            <div class="p-6">
-                                <div class="flex items-center space-x-4">
-                                    @if($party->logo)
-                                        <img class="h-16 w-16 rounded-full object-cover" src="{{ asset('storage/' . $party->logo) }}" alt="{{ $party->name }}">
-                                    @endif
-                                    <div>
-                                        <h3 class="text-lg font-medium text-gray-900">{{ $party->name }}</h3>
-                                        <p class="text-sm text-gray-500">
-                                            Leader: {{ $party->leader_firstname }}
-                                            {{ $party->leader_infix ? $party->leader_infix . ' ' : '' }}
-                                            {{ $party->leader_lastname }}
-                                        </p>
+            @if($parties->isEmpty())
+                <p>There are no parties.</p>
+            @else
+                <form action="{{ route('votes.store') }}" method="POST" id="votingForm">
+                    @csrf
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        @foreach($parties as $party)
+                            <div class="bg-white overflow-hidden shadow rounded-lg cursor-pointer hover:shadow-lg transition-shadow duration-300 party-card" 
+                                 data-party-id="{{ $party->partyID }}">
+                                <div class="p-6">
+                                    <div class="flex items-center space-x-4">
+                                        @if($party->logo)
+                                            <img class="h-16 w-16 rounded-full object-cover" src="{{ asset('storage/' . $party->logo) }}" alt="{{ $party->name }}">
+                                        @endif
+                                        <div>
+                                            <h3 class="text-lg font-medium text-gray-900">{{ $party->name }}</h3>
+                                            <p class="text-sm text-gray-500">
+                                                Leader: {{ $party->leader_firstname }}
+                                                {{ $party->leader_infix ? $party->leader_infix . ' ' : '' }}
+                                                {{ $party->leader_lastname }}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-4">
+                                        <p class="text-sm text-gray-600">{{ Str::limit($party->description, 100) }}</p>
+                                    </div>
+
+                                    <div class="mt-4">
+                                        <input type="checkbox" name="selected_parties[]" value="{{ $party->partyID }}" 
+                                               class="party-checkbox hidden">
+                                        <button type="button" class="select-party-btn w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors duration-300">
+                                            Select Party
+                                        </button>
                                     </div>
                                 </div>
-
-                                <div class="mt-4">
-                                    <p class="text-sm text-gray-600">{{ Str::limit($party->description, 100) }}</p>
-                                </div>
-
-                                <div class="mt-4">
-                                    <input type="checkbox" name="selected_parties[]" value="{{ $party->partyID }}" 
-                                           class="party-checkbox hidden">
-                                    <button type="button" class="select-party-btn w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors duration-300">
-                                        Select Party
-                                    </button>
-                                </div>
                             </div>
-                        </div>
-                    @endforeach
-                </div>
+                        @endforeach
+                    </div>
 
-                <div class="mt-8 text-center">
-                    <p class="text-gray-600 mb-4">You must select exactly 3 parties</p>
-                    <button type="submit" id="submitVote" class="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-300" disabled>
-                        Submit Vote
-                    </button>
-                </div>
-            </form>
+                    <div class="mt-8 text-center">
+                        <p class="text-gray-600 mb-4">You must select exactly 3 parties</p>
+                        <button type="submit" id="submitVote" class="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-300" disabled>
+                            Submit Vote
+                        </button>
+                    </div>
+                </form>
+            @endif
         </div>
     </div>
 
@@ -175,5 +180,5 @@
         });
     </script>
     @endpush
-</x-layouts.default>
+@endsection
 

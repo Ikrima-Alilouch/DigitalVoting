@@ -20,4 +20,9 @@ yarn-error.log
 /.idea
 /.nova
 /.vscode
-/.zed
+/.zed 
+/vendor/
+/node_modules/
+/.env
+/.env.*
+!/ .env.example

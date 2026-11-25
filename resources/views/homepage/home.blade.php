@@ -1,8 +1,6 @@
-<x-layouts.default>
-    <x-slot:title>
-        Digital Voting System
-    </x-slot>
+@extends('layouts.app')
 
+@section('content')
     <!-- Hero Section -->
     <div class="relative bg-white overflow-hidden">
         <div class="max-w-7xl mx-auto">
@@ -130,4 +128,4 @@
             </div>
         </div>
     </footer>
-</x-layouts.default> 
+@endsection 

@@ -1,5 +1,6 @@
-<x-layouts.default>
-    <x-slot name="title">Voting Overview</x-slot>
+@extends('layouts.app')
+
+@section('content')
     <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div class="px-4 py-6 sm:px-0">
             <h1 class="text-3xl font-bold text-gray-900 mb-6">Voting Overview</h1>
@@ -33,19 +34,26 @@
                             @foreach($userVotes as $vote)
                                 <div class="bg-gray-50 rounded-lg p-4">
                                     <div class="flex items-center space-x-4">
-                                        @if($vote->party->logo)
-                                            <img class="h-16 w-16 rounded-full object-cover" 
-                                                 src="{{ asset('storage/' . $vote->party->logo) }}" 
-                                                 alt="{{ $vote->party->name }}">
+                                        @if($vote->party)
+                                            @if($vote->party->logo)
+                                                <img class="h-16 w-16 rounded-full object-cover" 
+                                                     src="{{ asset('storage/' . $vote->party->logo) }}" 
+                                                     alt="{{ $vote->party->name }}">
+                                            @endif
+                                            <div>
+                                                <h3 class="text-lg font-medium text-gray-900">{{ $vote->party->name }}</h3>
+                                                <p class="text-sm text-gray-500">
+                                                    Leader: {{ $vote->party->leader_firstname }}
+                                                    {{ $vote->party->leader_infix ? $vote->party->leader_infix . ' ' : '' }}
+                                                    {{ $vote->party->leader_lastname }}
+                                                </p>
+                                            </div>
+                                        @else
+                                            <div>
+                                                <h3 class="text-lg font-medium text-gray-900 text-red-500">[Party deleted]</h3>
+                                                <p class="text-sm text-gray-500">This party no longer exists.</p>
+                                            </div>
                                         @endif
-                                        <div>
-                                            <h3 class="text-lg font-medium text-gray-900">{{ $vote->party->name }}</h3>
-                                            <p class="text-sm text-gray-500">
-                                                Leader: {{ $vote->party->leader_firstname }}
-                                                {{ $vote->party->leader_infix ? $vote->party->leader_infix . ' ' : '' }}
-                                                {{ $vote->party->leader_lastname }}
-                                            </p>
-                                        </div>
                                     </div>
                                 </div>
                             @endforeach
@@ -85,4 +93,4 @@
             </div>
         </div>
     </div>
-</x-layouts.default> 
+@endsection 
